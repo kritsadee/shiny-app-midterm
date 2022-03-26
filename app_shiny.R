@@ -99,7 +99,8 @@ server<-function(input, output, session){
             geom_dotplot(binwidth = 0.5,fill = "maroon2")+
             labs(x="คะแนน",y="")+
             theme(axis.text.y =element_blank(),
-                  panel.background = element_blank())
+                  panel.background = element_blank(),
+                  axis.ticks.y=element_blank())
                   
         
     })
