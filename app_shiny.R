@@ -32,29 +32,29 @@ names(sum.mid)[]<-c("N","mean","sd","min","max")
 #user interface part
 ui<-fluidPage(
     
-    h2("�к���§ҹ�š�����¹"),
+    h2("ระบบรายงานผลการเรียน"),
     fluidRow(
         column(6,
-        textInput("stuID","��سҡ�͡���ʹ��Ե"),
+        textInput("stuID","กรุณากรอกรหัสนิสิต"),
         actionButton("submit","Submit"),
         hr(),
-        p(strong("��ṹ�ͺ��ҧ�Ҥ�ͧ���Ե�͹���¹��� 1")),
+        p(strong("คะแนนสอบกลางภาคของนิสิตตอนเรียนที่ 1")),
         plotOutput("plot",height = "80px",width = "400px"),
-        p(strong("���ʶԵԾ�鹰ҹ")),
+        p(strong("ค่าสถิติพื้นฐาน")),
         dataTableOutput("summary",height = "80px",width = "400px"),
     ),
         column(6,
-        p(strong("��§ҹ��������˹�Ңͧ���Ե")),
+        p(strong("รายงานความก้าวหน้าของนิสิต")),
         textOutput("name"),
         textOutput("surname"),
         textOutput("midEx"),
         textOutput("att"),
         textOutput("work"),
         textOutput("score"),
-        h5(strong("���й�����Ѻ���Ե")),
+        h5(strong("คำแนะนำสำหรับนิสิต")),
         textOutput("result"),
         hr(),
-        p("�����˵�: ���йӷ���ҡ��Ҩҡ��÷ӹ����������żš�����¹�����оĵԡ���������¹���ͧ���Ե��蹡�͹˹�� ����§��ͤҴ��ó���ҹ��")
+        p("หมายเหตุ: คำแนะนำที่ปรากฏมาจากการทำนายโดยใช้ข้อมูลผลการเรียนรู้และพฤติกรรมการเรียนรู้ของนิสิตรุ่นก่อนหน้า เป็นเพียงข้อคาดการณ์เท่านั้น")
     )
     )
 )
@@ -68,36 +68,36 @@ server<-function(input, output, session){
     observeEvent(input$submit,{
         stu.filter$data<-dat5%>%filter(s.id==input$stuID)
         result.stu$data<-predict(fit.knn2,stu.filter$data[,c(5:7,11)])
-        if(result.stu$data==0){show.result$data<-"���Ե���͡�����ô�����ҧ A �֧ C ��õ������ҧ���͵����ͻ���"}
-        else {show.result$data<-"���Ե���͡�����ô�����ҧ D+ �֧ F ��þѲ�ҵ��ͧ"}
+        if(result.stu$data==0){show.result$data<-"นิสิตมีโอกาสได้เกรดระหว่าง A ถึง C ควรตั้งใจอย่างเสมอต้นเสมอปลาย"}
+        else {show.result$data<-"นิสิตมีโอกาสได้เกรดระหว่าง D+ ถึง F ควรพัฒนาตนเอง"}
     })
     
     output$name<-renderText({
-        paste("���͹��Ե: ",stu.filter$data$name)
+        paste("ชื่อนิสิต: ",stu.filter$data$name)
     })
     output$surname<-renderText({
-        paste("���ʡ��: ",stu.filter$data$surname)
+        paste("นามสกุล: ",stu.filter$data$surname)
     })
     output$midEx<-renderText({
-        paste("��ṹ�ͺ��ҧ�Ҥ(��� 25): ",stu.filter$data$midterm)
+        paste("คะแนนสอบกลางภาค(เต็ม 25): ",stu.filter$data$midterm)
     })
     output$att<-renderText({
-        paste("�����Тͧ���������¹: ",stu.filter$data$att)
+        paste("ร้อยละของการเข้าเรียน: ",stu.filter$data$att)
     })
     output$result<-renderText({
         paste("",show.result$data)
     })
     output$work<-renderText({
-        paste("�����Тͧ����觡�ú�ҹ: ",stu.filter$data$prac)
+        paste("ร้อยละของการส่งการบ้าน: ",stu.filter$data$prac)
     })
     output$score<-renderText({
-        paste("��ṹ����¢ͧ��鹧ҹ������Ѻ(��� 20):",stu.filter$data$mean_score)
+        paste("คะแนนเฉลี่ยของชิ้นงานที่ได้รับ(เต็ม 20):",stu.filter$data$mean_score)
     })
     
     output$plot<-renderPlot({
         ggplot(dat5,aes(x = midterm)) + 
             geom_dotplot(binwidth = 0.5,fill = "maroon2")+
-            labs(x="��ṹ",y="")+
+            labs(x="คะแนน",y="")+
             theme(axis.text.y =element_blank(),
                   panel.background = element_blank())
                   
